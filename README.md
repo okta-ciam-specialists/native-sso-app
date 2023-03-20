@@ -1,14 +1,34 @@
 # native-sso-app
 
-[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme) ![GitHub](https://img.shields.io/github/license/okta-ciam-specialists/native-sso-app) ![GitHub contributors (via allcontributors.org)](https://img.shields.io/github/all-contributors/okta-ciam-specialists/native-sso-app) [![wakatime](https://wakatime.com/badge/user/28857d2c-0688-4cac-b02c-d81ceead7b94/project/8c50d412-60ff-4cc9-bff1-22de72af7197.svg)](https://wakatime.com/badge/user/28857d2c-0688-4cac-b02c-d81ceead7b94/project/8c50d412-60ff-4cc9-bff1-22de72af7197)
-
-![GitHub forks](https://img.shields.io/github/forks/okta-ciam-specialists/native-sso-app?style=social)
-
-![GitHub followers](https://img.shields.io/github/followers/okta-ciam-specialists?style=social)
-
-|     |     |
-| --- | --- |
-| [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/fork/github/okta-ciam-specialists/native-sso-app.git)  | [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fokta-ciam-specialists%2Fnative-sso-app) |
+<p align="center">
+	<a href="https://github.com/RichardLitt/standard-readme">
+		<img src="https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square" alt="standard-readme compliant">
+	</a>
+	<a href="#contributors">
+		<img alt="GitHub contributors (via allcontributors.org)" src="https://img.shields.io/github/all-contributors/okta-ciam-specialists/native-sso-app">
+	</a>
+	<a href="#license">
+		<img alt="GitHub" src="https://img.shields.io/github/license/okta-ciam-specialists/native-sso-app">
+	</a>
+	<a href="https://wakatime.com/badge/user/28857d2c-0688-4cac-b02c-d81ceead7b94/project/8c50d412-60ff-4cc9-bff1-22de72af7197">
+		<img src="https://wakatime.com/badge/user/28857d2c-0688-4cac-b02c-d81ceead7b94/project/8c50d412-60ff-4cc9-bff1-22de72af7197.svg" alt="wakatime">
+	</a>
+</p>
+<br/>
+<p align="center">
+	<img alt="GitHub followers" src="https://img.shields.io/github/followers/okta-ciam-specialists?style=social">
+	<img alt="GitHub forks" src="https://img.shields.io/github/forks/okta-ciam-specialists/native-sso-app?style=social">
+</p>
+<br/>
+<p align="center">
+	<a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fokta-ciam-specialists%2Fnative-sso-app"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
+	<a href="https://stackblitz.com/fork/github/okta-ciam-specialists/native-sso-app.git">
+	<img
+		alt="Open in StackBlitz"
+		src="https://developer.stackblitz.com/img/open_in_stackblitz.svg"
+	/>
+	</a>
+</p>
 
 A simple React SPA (powered by [Vite](https://vitejs.dev)) that represents a &#34;native&#34; application in order to initiate an OAuth compliant Native SSO to a secondary application.
 

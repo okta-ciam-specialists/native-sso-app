@@ -1,13 +1,16 @@
 {
   "name": "native-sso-app",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "local": "vercel dev",
     "build": "vite build",
     "preview": "vite preview"
+  },
+  "engines": {
+    "node": "16.5.0"
   },
   "dependencies": {
     "@fontsource/public-sans": "^4.5.12",

@@ -28,6 +28,10 @@
     "axios": "^1.3.4",
     "react-json-pretty": "^2.2.0",
     "react-router-dom": "^5.3.4",
+    "vercel": "^28.17.0",
     "vite": "^4.1.0"
+  },
+  "stackblitz": {
+    "startCommand": "vercel dev"
   }
 }

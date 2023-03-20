@@ -32,6 +32,6 @@
     "vite": "^4.1.0"
   },
   "stackblitz": {
-    "startCommand": "vercel dev"
+    "startCommand": "npm run dev"
   }
 }

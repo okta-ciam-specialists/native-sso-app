@@ -1,0 +1,25 @@
+{
+  "projectName": "native-sso-app",
+  "projectOwner": "eatplaysleep",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "eslint",
+  "contributors": [
+    {
+      "login": "krishvenkatraman-okta-zz",
+      "name": "Krish Venkatraman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/14205843?v=4",
+      "profile": "https://github.com/krishvenkatraman-okta-zz",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "linkToUsage": true
+}

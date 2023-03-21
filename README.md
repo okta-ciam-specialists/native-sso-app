@@ -4,9 +4,9 @@
 	<a href="https://github.com/RichardLitt/standard-readme">
 		<img src="https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square" alt="standard-readme compliant">
 	</a>
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+	<a href="#contributors">
+		<img src="https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square" alt="standard-readme compliant">
+	</a>
 	<a href="#license">
 		<img alt="GitHub" src="https://img.shields.io/github/license/okta-ciam-specialists/native-sso-app">
 	</a>
@@ -94,7 +94,7 @@ Small note: If editing the README, please conform to the [standard-readme](https
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/krishvenkatraman-okta-zz"><img src="https://avatars.githubusercontent.com/u/14205843?v=4?s=100" width="100px;" alt="Krish Venkatraman"/><br /><sub><b>Krish Venkatraman</b></sub></a><br /><a href="https://github.com/eatplaysleep/native-sso-app/commits?author=krishvenkatraman-okta-zz" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/krishvenkatraman-okta-zz"><img src="https://avatars.githubusercontent.com/u/14205843?v=4?s=100" width="100px;" alt="Krish Venkatraman"/><br /><sub><b>Krish Venkatraman</b></sub></a><br /><a href="https://github.com/eatplaysleep/native-sso-app/commits?author=krishvenkatraman-okta-zz" title="Ideas">🤔</a></td>
     </tr>
   </tbody>
   <tfoot>

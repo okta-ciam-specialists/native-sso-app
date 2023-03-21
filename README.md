@@ -45,6 +45,53 @@ TODO: Fill out this long description.
 
 ## Background
 
+### The "Standard" & History
+
+Today, one of the most effective ways to maintain a seamless user experience across both web and mobile is to utilize a standard OpenID Connect authentication mechanism on both your mobile app and web app.
+
+This allows the mobile application to take advantage of device OS capabilities that will permit the sharing of the Okta user session. By doing so, when a user logs into a website and then attempts to login to a native application, the native application will be able to recognize the web session and the user will "automagically" be authenticated without needing to enter their credentials.
+
+Historically, companies like Google, Facebook, and Microsoft all implemented this normal OIDC authentication flow and many companies followed suit. However...
+
+### The Problem
+
+The OIDC authentication flow on native devices (namely Apple) is _not_ ideal. The user is prompted with an OS dialog and the flow is choppy. Many UX teams despise this method of authentication, even though it has significant advantages over "native" forms of authentication.
+
+Due to the UX challenges, many companies, including Google, Facebook, and Microsoft, have moved _away_ from an OIDC authentication pattern in their native apps and have returned to the more "traditional" native/API-driven authentication (or more advanced options that we won't get into).
+
+So how do we combat this? How can we provide our customers with a seamless experience and enable them to authenticate in both a native app and website _only once_?
+
+### The Solution
+
+[OpenID Native SSO](https://developer.okta.com/docs/guides/configure-native-sso/main/) to the rescue!
+
+This OpenID specification was traditionally designed for native-to-native app SSO. However, we can also use this to enable native-to-_web app_ SSO.
+
+#### What does this solve?
+
+- Users can login to a native application using a native/API-driven authentication (non-OIDC compliant).
+- Native applications can still "link out" to their website and seamlessly SSO their users so that they are "automagically" authenticated when they open the link.
+
+#### Is this secure?
+
+_Yes, and no_. This is always a subjective question. This mechanism assumes that a native application has implemented authentication _without_ using an OIDC Compliant mechanism. At Okta, we _support_ this but _we discourage_ it. There are tremendous benefits to using an OIDC Compliant authentication mechanism in a mobile application.
+
+TODO - add benefits of OIDC Compliant mobile login
+
+This does not mean that using a non-OIDC Compliant mechanism is necessarily _insecure_. It is a perfectly acceptable means to authenticate. But it does have some drawbacks.
+
+The OIDC Native SSO implementation utilizes an `id_token` and `device_secret`. If not implemented correctly, there _can be_ security vulnerabilities.
+
+Typically, native-to-native application communication is isolated to a single device and secured by device OS mechanisms so there are minimal concerns when sharing an `id_token` and `device_secret` between two apps. On Apple devices, for example, this is typically handled using [Apple's Keychain Services](https://developer.apple.com/documentation/security/keychain_services), resulting in a _very_ secure handshake.
+
+This demonstration application utilizes _two_ single-page applications rather than a native application and web application _purely_ for the sake of keeping things simple.
+
+---
+
+<span style="color: red"><em><b>There are security vulnerabilities in this demo app. DO NOT copy the implementation as-is.</b></em></span>
+
+---
+
 ## Install
 
 ```bash
@@ -60,6 +107,7 @@ You will need to spin up and use your own tenant if you need to use different re
 Follow the steps necessary to setup your application [here](https://developer.okta.com/docs/guides/configure-native-sso/main/#native-sso-flow).
 
 Update the `.env` file with the appropriate values:
+
 ```env
 VITE_OKTA_CLIENT_ID=
 VITE_OKTA_ISSUER=
@@ -74,6 +122,7 @@ npm run dev
 ```
 
 ### Deploying
+
 This application was initially deployed using Vercel. To deploy to your own instance, use the 'Deploy' button at the top of the page and follow Vercel's guide(s).
 
 ## Maintainers
@@ -94,7 +143,7 @@ Small note: If editing the README, please conform to the [standard-readme](https
 <table>
   <tbody>
     <tr>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/krishvenkatraman-okta-zz"><img src="https://avatars.githubusercontent.com/u/14205843?v=4?s=100" width="100px;" alt="Krish Venkatraman"/><br /><sub><b>Krish Venkatraman</b></sub></a><br /><a href="https://github.com/eatplaysleep/native-sso-app/commits?author=krishvenkatraman-okta-zz" title="Ideas">🤔</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/krishvenkatraman-okta-zz"><img src="https://avatars.githubusercontent.com/u/14205843?v=4?s=100" width="100px;" style="border-radius:50%" alt="Krish Venkatraman"/><br /><sub><b>Krish Venkatraman</b></sub></a><br /><a href="https://github.com/eatplaysleep/native-sso-app/commits?author=krishvenkatraman-okta-zz" title="Ideas">🤔</a></td>
     </tr>
   </tbody>
   <tfoot>

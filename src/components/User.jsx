@@ -10,7 +10,7 @@ export const User = () => {
 
   return (
     <Container maxWidth={false}>
-      <Card sx={{ backgroundColor: '#272822', my: 3, p: 2}}>
+      {authState?.isAuthenticated && <Card sx={{ backgroundColor: '#272822', my: 3, p: 2}}>
         <Typography variant="h6" sx={{ color: 'white' }}>
           ID Token
         </Typography>
@@ -19,7 +19,7 @@ export const User = () => {
             <Codeblock data={JSON.stringify(idToken)} />
           </Box>
         </CardContent>
-      </Card>
+      </Card>}
     </Container>
   );
 };

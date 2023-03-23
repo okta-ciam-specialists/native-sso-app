@@ -22,6 +22,7 @@
 <br/>
 <p align="center">
 	<a href="https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fokta-ciam-specialists%2Fnative-sso-app"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
+	&nbsp;
 	<a href="https://stackblitz.com/fork/github/okta-ciam-specialists/native-sso-app.git">
 	<img
 		alt="Open in StackBlitz"
@@ -84,7 +85,32 @@ The OIDC Native SSO implementation utilizes an `id_token` and `device_secret`. I
 
 Typically, native-to-native application communication is isolated to a single device and secured by device OS mechanisms so there are minimal concerns when sharing an `id_token` and `device_secret` between two apps. On Apple devices, for example, this is typically handled using [Apple's Keychain Services](https://developer.apple.com/documentation/security/keychain_services), resulting in a _very_ secure handshake.
 
-This demonstration application utilizes _two_ single-page applications rather than a native application and web application _purely_ for the sake of keeping things simple.
+This demonstration application utilizes _two_ single-page applications rather than a native application and web application _purely_ for the sake of keeping things simple. However, the two applications are isolated from each other and do not share any cookies/session information (otherwise that would defeat the purpose of this demo!).
+
+The main security requirement is ensuring that the `device_secret` is _not_ intercepted. If a bad actor obtains the `id_token` **and** `device_secret`, they would be able to obtain as many tokens for that user as they want (_at least until the `device_secret` is revoked_). This is bad.
+
+This implementation _borrows_ from the Authorization with PKCE flow to ensure that the backend function/service, which is acting as a "man in the middle", is a _trusted_ "man in the middle" and not a bad actor.
+
+#### Can it be hacked?
+
+Is anything _really_ un-hackable? ¯\\\_(ツ)\_/¯
+
+_Hypothetically_... a bad actor could intercept an HTTPS request from the native app to the server, crack the encryption to get to the payload, and steal the `id_token`, and `device_secret`. That would be game over.
+
+But, if a hacker does that... we have bigger issues on our hands as basically the entire security of the internet would need to be questioned!
+
+#### So how does it work?
+
+The basic setup is a "native" app, a web-based app, and a function/service with some sort of persistance layer (i.e. Redis). The two applications use a form of PKCE to securely exchange the `device_secret` with an intermediary -- the function/service.
+
+The initiating app makes a **POST** request to the backend service with a `code_verifier`, `id_token`, and the `device_secret`, then opens a browser to the web app.
+
+The web app also makes a **POST** request
+
+<details>
+	<summary>Sequence Diagram</summary>
+	<img src="./src/assets/sequence.svg">
+</details>
 
 ---
 

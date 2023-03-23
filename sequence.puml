@@ -1,0 +1,140 @@
+@startuml
+!pragma teoz true
+
+skinparam arrow {
+	color #00297A
+}
+
+skinparam roundCorner 20
+
+skinparam actor {
+	backgroundColor white
+	borderColor #00297A
+}
+
+skinparam sequence {
+	lifelineBorderColor #6E6E78
+}
+skinparam participant {
+	backgroundColor #00297A
+	borderColor #00297A
+	fontColor white
+}
+
+actor Alice as user
+participant "Native App" as app
+participant "Okta" as okta
+participant "Exchange Service" as tx
+database "Redis" as redis
+participant "Browser" as browser
+participant "Web App" as web
+
+
+!$OKTA_URL = 'okta.com'
+!$CLIENT_ID = '<web_app>'
+!$DEFAULT_URL = ''
+!$REDIRECT_URL = '<redirect_uri>'
+!$IDP_ID = 'one_login'
+
+!unquoted function $getUrl($path='', $method='GET', $url=$DEFAULT_URL)
+	!local $PATH = '""' + $path + '""'
+
+	!if ($url == 'okta')
+		!$url = $OKTA_URL
+	!endif
+
+	!local $URL = '""' + $url + '""' + $PATH
+
+	!if (($path == 'GET' || $path == 'POST' || $path == 'PUT' || $path == 'DELETE' || $path == 'PATCH' || $path == 302) && $method == 'GET')
+		!$method = $path
+		!$URL = ''
+		!$PATH = ''
+	!endif
+
+	!local $m = '**' + $method + '** '
+
+	!if ($url == 0)
+		!$URL = ''
+	!endif
+
+	!return $m + $URL
+!endfunction
+
+!unquoted function $getNumber($number, $color='#00297A')
+!return "<color " + $color + "> **[" + $number + "]**  </color>"
+!endfunction
+
+title Native --> Web SSO
+footer Page %page% of %lastpage%
+
+autonumber "<font color='#00297A'><b>[##] "
+|||
+user -> app : login
+|||
+	app <-> okta : handle login
+	& note right of okta
+		**Assumption is that the native app is __not__ using an OIDC flow.**
+
+		* If your application __is__ using OIDC, then this entire flow is not applicable!
+
+		* Login by whatever means you decide.
+
+		* __The login must result in OAuth tokens.__
+
+		* The application __must__ request, at a minimum, the following scopes:
+
+			""openid offline_access device_sso""
+
+	end note
+|||
+	okta --> app : <access_token>\n<color blue>**<id_token>**</color>\n<color blue>**<device_secret>**</color>\n<refresh_token>
+|||
+	app -> app : generate\n""code_verifier""\n& ""code_challenge""
+|||
+	create tx
+	app -> tx : $getUrl(/sso, POST)\n{\n\t""code_verifier:""\t<color blue>""<code_verifier>""</color>\n\t""id_token:""\t\t<color blue>"" <id_token>""</color>\n\t""device_secret:""\t<color blue>""<device_secret>""</color>\n}
+|||
+	tx -> tx : generate ""code_challenge""
+|||
+	create redis
+	tx --> redis : **SET**\n""<code_challenge>""\n""Buffer.from([""\n\t\t""<id_token>,""\n\t\t""<device_secret>""\n\t""].join('|'))""\n\t"".toString('base64url')""
+|||
+	tx --> app : **204**
+|||
+	create browser
+	app --> browser : **GET** <color blue>""<web_app_url>""</color>\n\t#""id_token""\t\t    =\t    <color blue>""<id_token>""</color>\n\t& ""code_challenge""\t=\t<color blue>""<code_challenge>""</color>
+	create web
+	browser --> web :
+|||
+	web -> web : parse\nURL
+|||
+	web -> tx : $getUrl(/sso, POST)\l{\l\t""code_challenge:""\t<color blue>""<code_challenge>""</color>\r\t""id_token:""\t\t    <color blue>""<id_token>""</color>\l}
+|||
+	tx -> redis : **GET**\n""<code_challenge>""
+|||
+	redis --> tx : <data>
+|||
+	tx --> web : Buffer.from(<color blue><data></color>)\n\t.toString('utf-8')\n\t.split('|')
+|||
+	web -> web : generate\n<tokenParams>
+|||
+	web -> okta : $getUrl(/sso, POST)\l{\l\t""client_id:""\t\t\t<color blue>""<web_app>""</color>\r\t""scope:""\t\t\t\t<color blue>""openid profile email offline_access""</color>\l\t""grant_type:""\t\t      <color blue>""urn:ietf:params:oauth:grant-type:token-exchange""</color>\r\t""actor_token:""\t\t    <color blue>""<device_secret>""</color>\l\t""actor_token_type:""\t  <color blue>""urn:x-oath:params:oauth:token-type:device-secret""</color>\r\t""subject_token_type:""      <color blue>""urn:ietf:params:oauth:token-type:id_token""</color>\l\t""audience:""\t\t\t  <color blue>""<audience>""</color>\r\t""subject_token:""\t\t<color blue>""<id_token>""</color>\l}
+|||
+	okta --> web : <access_token>\n<id_token>\n<refresh_token>
+|||
+	web -> web : handle\ntokens
+|||
+	web --> browser :
+	& browser --> user : success!
+|||
+@enduml
+
+
+'client_id': '0oa7dudtyyxhQlxEN1d7',
+  'scope': 'openid profile email offline_access',
+  'grant_type': 'urn:ietf:params:oauth:grant-type:token-exchange',
+  'actor_token': 'VLR5OQ1p_zPYh_1QMdP3GvnY8xqGL6PEXXAes1BcH44',
+  'actor_token_type': 'urn:x-oath:params:oauth:token-type:device-secret',
+  'subject_token': 'eyJraWQiOiJQb0ZxWFRvSFJWMXdYYjA3dkt4MGNhOFJGTi1OYmpfVHlwMFc3MnhNNWZrIiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiIwMHUxenJ2dnh4dzhleGZjNjFkNyIsIm5hbWUiOiIiLCJlbWFpbCI6ImRhbm55LmZ1aHJpbWFuQG9rdGEuY29tIiwidmVyIjoxLCJpc3MiOiJodHRwczovL2lkZW50aXR5LmF0a28ucm9ja3Mvb2F1dGgyL2F1czdkdGo2eGpHaVM0c3BvMWQ3IiwiYXVkIjoiMG9hN2R1MXdvbTNCRXlXOGsxZDciLCJpYXQiOjE2NzkwMzYzMDQsImV4cCI6MTY3OTAzOTkwNCwianRpIjoiSUQuWXRtSEFDSmhadWVicmQtdDRlQlk3MmFGQ1lqVmNnaEYtTGpJemVib0RaRSIsImFtciI6WyJwd2QiXSwiaWRwIjoiMDBvMXpydnZ1YzJ4Q3pMQ3oxZDciLCJub25jZSI6IjEyMzQiLCJzaWQiOiJpZHhjeFo4dlM5V1E3NlpRYlVyOVNfTW9RIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZGFubnkuZnVocmltYW5Ab2t0YS5jb20iLCJhdXRoX3RpbWUiOjE2NzkwMzMyNjEsImF0X2hhc2giOiJRUnI0cjNqenkyaEp1UXZIT1dEUktnIiwiZHNfaGFzaCI6ImVlNFFubEdoS0FWSkJwWVV1RjdLUVEifQ.IxQLJltv7t9l4Os91Y0Zu_j4lJ4u74ZST_Os50HHLLCpxfIFyye04UM9F3dN3PdXGblZjeVEo24SDDy089UpC0Qcmw8c0IVRF0KSGuyhpdF8dN9mAZeYO3L-NeNNLsoNjUHGZozGvLl34UR1mu4dKSFfE3rOZmpB77weX0kQtM2F2n_AESW39gXP73z2m6yI7NMMEii3hMjvB72NI1ya3kmdK1NQnDNlzigLj_LjPaFpQVSu3SxctN0QUFeUmvYaWJZ8Q_rLx0fha5y0IgV2N8Ic_P6bqhuoXxyj1ZTp8650qRxUjhE0ba5Ws3p9iVBiS99JF-XL8bWn7y8Ni1jUwg',
+  'subject_token_type': 'urn:ietf:params:oauth:token-type:id_token',
+  'audience': 'https://api'

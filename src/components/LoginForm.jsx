@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
 	Backdrop,
 	Box,
@@ -17,6 +18,7 @@ export const LoginForm = () => {
 	const [password, setPassword] = useState();
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState();
+	const history = useHistory();
 
 	const { oktaAuth } = useOktaAuth();
 
@@ -32,6 +34,19 @@ export const LoginForm = () => {
 	};
 
 	const handleClick = () => {
+		const login = async () => {
+			const result = await oktaAuth.idx.authenticate(username, password);
+
+			console.log(result);
+
+			const { status, tokens } = result || {};
+
+			if (status === 'SUCCESS' && tokens) {
+				oktaAuth.tokenManager.setTokens(tokens);
+				history.push('/');
+			}
+		};
+
 		if (username && password && !isLoading) {
 			setIsLoading(true);
 
@@ -39,22 +54,15 @@ export const LoginForm = () => {
 				setError(undefined);
 			}
 
-			oktaAuth
-				.signInWithCredentials({ username, password, sendFingerprint: true })
-				.then(({ sessionToken, status }) => {
-					if (status === 'SUCCESS' && sessionToken) {
-						oktaAuth.signInWithRedirect({ sessionToken });
-					}
-				})
-				.catch((error) => {
-					setIsLoading(false);
-					setUsername(undefined);
-					setPassword(undefined);
+			login().catch((error) => {
+				setIsLoading(false);
+				setUsername(undefined);
+				setPassword(undefined);
 
-					console.log(error?.message);
+				console.log(error?.message);
 
-					setError(error?.message ?? 'Unable to Authenticated');
-				});
+				setError(error?.message ?? 'Unable to Authenticated');
+			});
 		}
 	};
 
